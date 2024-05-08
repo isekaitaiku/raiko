@@ -25,7 +25,7 @@ use raiko_primitives::{
 };
 use serde::{Deserialize, Serialize};
 use std::{collections::HashSet, sync::Arc};
-use tracing::info;
+use tracing::{info, warn};
 
 use crate::{
     error::{HostError, HostResult},
@@ -386,7 +386,7 @@ async fn get_blob_data(beacon_rpc_url: &str, block_id: u64) -> Result<GetBlobsRe
         let blob_response: GetBlobsResponse = response.json().await?;
         Ok(blob_response)
     } else {
-        println!(
+        warn!(
             "Request {url} failed with status code: {}",
             response.status()
         );
