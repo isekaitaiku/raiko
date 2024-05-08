@@ -100,3 +100,7 @@ If your CPU doesn't support SGX, you can still run the SGX code through gramine 
 ```console
 $ MOCK=1 TARGET=sgx make run
 ```
+
+## OpenAPI
+
+When running any of the features/provers, OpenAPI UIs are available in both Swagger and Scalar flavors on `/swagger-ui` and `/scalar` respectively.
