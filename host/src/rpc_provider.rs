@@ -23,7 +23,7 @@ pub struct RpcBlockDataProvider {
 impl RpcBlockDataProvider {
     pub fn new(url: &str, block_number: u64) -> HostResult<Self> {
         let url =
-            reqwest::Url::parse(&url).map_err(|_| HostError::RPC("Invalid RPC URL".to_owned()))?;
+            reqwest::Url::parse(url).map_err(|_| HostError::RPC("Invalid RPC URL".to_owned()))?;
         Ok(Self {
             provider: ProviderBuilder::new().on_provider(RootProvider::new_http(url.clone())),
             client: ClientBuilder::default().http(url),
@@ -251,13 +251,13 @@ impl BlockDataProvider for RpcBlockDataProvider {
 
                     // If we can process all keys, remove the address from the map after the loop
                     if num_keys_to_process == keys.len() {
-                        address_to_remove = Some(address.clone());
+                        address_to_remove = Some(*address);
                     }
 
                     // Extract the keys to process
                     let keys_to_process = keys
                         .drain(0..num_keys_to_process)
-                        .map(|v| StorageKey::from(v))
+                        .map(StorageKey::from)
                         .collect::<Vec<_>>();
 
                     // Add the request
@@ -266,7 +266,7 @@ impl BlockDataProvider for RpcBlockDataProvider {
                             .add_call::<_, EIP1186AccountProofResponse>(
                                 "eth_getProof",
                                 &(
-                                    address.clone(),
+                                    *address,
                                     keys_to_process.clone(),
                                     BlockId::from(block_number),
                                 ),
